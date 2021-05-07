@@ -98,7 +98,7 @@ class SASRec(torch.nn.Module):
     def forward(self, user_ids, log_seqs, pos_seqs, neg_seqs, hyper_para):
     ###end###
         ###my modification start###
-        view_1 = data_argument(log_seqs ,tpye=0 ,hyper_para)
+        view_1 = data_argument(log_seqs ,type=0 ,hyper_para)
         view_2 = data_argument(log_seqs ,type=1 ,hyper_para)
         ###end###
         log_feats = self.log2feats(log_seqs) # user_ids hasn't been used yet
