@@ -120,7 +120,7 @@ for epoch in range(epoch_start_idx, args.num_epochs + 1):
         ###original code###
         #pos_logits, neg_logits = model(u, seq, pos, neg)
         ###my modification start###
-        pos_logits, neg_logits, pairs_1_e, pair_2_e = model(u, seq, pos, neg, args.data_arg_proportion)
+        pos_logits, neg_logits, pairs_1_e, pairs_2_e = model(u, seq, pos, neg, args.data_arg_proportion)
         ###end###
         pos_labels, neg_labels = torch.ones(pos_logits.shape, device=args.device), torch.zeros(neg_logits.shape, device=args.device)
         # print("\neye ball check raw_logits:"); print(pos_logits); print(neg_logits) # check pos_logits > 0, neg_logits < 0
