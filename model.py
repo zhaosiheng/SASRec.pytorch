@@ -73,7 +73,7 @@ class SASRec(torch.nn.Module):
                 while number>0:
                     mask_target = random.randint(0 ,len(user_seq)-1)
                     if user_seq[mask_target]==0:
-                        contiune
+                        continue
                     else:
                         user_seq[mask_target] = 0
                         number = number - 1
