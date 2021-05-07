@@ -62,7 +62,7 @@ class SASRec(torch.nn.Module):
             # self.pos_sigmoid = torch.nn.Sigmoid()
             # self.neg_sigmoid = torch.nn.Sigmoid()
     ###my modification start###
-    def data_argument(seqs ,type ,hyper_para):
+    def data_augment(self ,seqs ,type ,hyper_para):
         views = []
         for user_seq in seqs:
             number = int(len(user_seq) * hyper_para)
@@ -121,8 +121,8 @@ class SASRec(torch.nn.Module):
     def forward(self, user_ids, log_seqs, pos_seqs, neg_seqs, hyper_para):
     ###end###
         ###my modification start###
-        view_1 = self.data_argument(log_seqs ,0 ,hyper_para)
-        view_2 = self.data_argument(log_seqs ,1 ,hyper_para)
+        view_1 = self.data_augment(log_seqs ,0 ,hyper_para)
+        view_2 = self.data_augment(log_seqs ,1 ,hyper_para)
         ###end###
         log_feats = self.log2feats(log_seqs) # user_ids hasn't been used yet
         ###my modification start###
