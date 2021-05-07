@@ -123,7 +123,7 @@ class SASRec(torch.nn.Module):
     ###end###
         ###my modification start###
         view_1 = self.data_augment(log_seqs ,0 ,hyper_para)
-        view_2 = self.data_augment(log_seqs ,1 ,hyper_para)
+        view_2 = self.data_augment(log_seqs ,0 ,hyper_para)
         ###end###
         log_feats = self.log2feats(log_seqs) # user_ids hasn't been used yet
         ###my modification start###
