@@ -1,6 +1,6 @@
 import numpy as np
 import torch
-
+import random
 
 class PointWiseFeedForward(torch.nn.Module):
     def __init__(self, hidden_units, dropout_rate):
@@ -61,7 +61,7 @@ class SASRec(torch.nn.Module):
 
             # self.pos_sigmoid = torch.nn.Sigmoid()
             # self.neg_sigmoid = torch.nn.Sigmoid()
-
+    
     def log2feats(self, log_seqs):
         seqs = self.item_emb(torch.LongTensor(log_seqs).to(self.dev))
         seqs *= self.item_emb.embedding_dim ** 0.5
@@ -92,10 +92,20 @@ class SASRec(torch.nn.Module):
         log_feats = self.last_layernorm(seqs) # (U, T, C) -> (U, -1, C)
 
         return log_feats
-
-    def forward(self, user_ids, log_seqs, pos_seqs, neg_seqs): # for training        
+    ###original code###
+    #def forward(self, user_ids, log_seqs, pos_seqs, neg_seqs): # for training     
+    ###my modification start###
+    def forward(self, user_ids, log_seqs, pos_seqs, neg_seqs, hyper_para):
+    ###end###
+        ###my modification start###
+        view_1 = data_argument(log_seqs ,tpye=0 ,hyper_para)
+        view_2 = data_argument(log_seqs ,type=1 ,hyper_para)
+        ###end###
         log_feats = self.log2feats(log_seqs) # user_ids hasn't been used yet
-
+        ###my modification start###
+        view_1_feats = self.log2feats(view_1)
+        view_2_feats = self.log2feats(view_2)
+        ###end###
         pos_embs = self.item_emb(torch.LongTensor(pos_seqs).to(self.dev))
         neg_embs = self.item_emb(torch.LongTensor(neg_seqs).to(self.dev))
 
@@ -104,8 +114,12 @@ class SASRec(torch.nn.Module):
 
         # pos_pred = self.pos_sigmoid(pos_logits)
         # neg_pred = self.neg_sigmoid(neg_logits)
-
-        return pos_logits, neg_logits # pos_pred, neg_pred
+        
+        ###original code###
+        #return pos_logits, neg_logits # pos_pred, neg_pred
+        ###my modification start###
+        return pos_logits, neg_logits, view_1_feats, view_2_feats
+        ###end###
 
     def predict(self, user_ids, log_seqs, item_indices): # for inference
         log_feats = self.log2feats(log_seqs) # user_ids hasn't been used yet
@@ -119,3 +133,28 @@ class SASRec(torch.nn.Module):
         # preds = self.pos_sigmoid(logits) # rank same item list for different users
 
         return logits # preds # (U, I)
+    ###my modification start###
+    def data_argument(seqs ,type ,hyper_para):
+        views = []
+        for user_seq in seqs:
+            number = int(len(user_seq) * hyper_para)
+            if type==0:#item crop
+                start_point = random.randint(o ,len(user_seq)-number)
+                reviews.append(user_seq[start_point:start+number])
+            if type==1:#item mask
+                while number>0:
+                    mask_target = random.randint(0 ,len(user_seq)-1)
+                    if user_seq[mask_target]==0:
+                        contiune
+                    else:
+                        user_seq[mask_target] = 0
+                        number = number - 1
+            if type==2:#item reorder
+                sart_point = random.randint(0 ,len(user_seq)-number)
+                seq = user_seq.numpy().to_list()
+                tmp = seq[start_point:start_point+number]
+                random.shuffle(tmp)
+                views.append(torch.tensor(seq[:start_point]+tmp+seq[start_point+number:]))
+        return views
+                             
+                      
