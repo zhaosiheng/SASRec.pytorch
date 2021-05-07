@@ -11,6 +11,30 @@ def str2bool(s):
     if s not in {'false', 'true'}:
         raise ValueError('Not a valid boolean string')
     return s == 'true'
+###my modification start###
+def sim(u ,v):
+    u = u.unsqueeze(0)
+    v = v.unsqueeze(0)
+    u = u.transpose(0,1)
+    return torch.matmul(u ,v)
+###end###
+###my modification start###
+def  CL_loss(si , sj):
+    pos_sim = []
+    neg_sim = []
+    for user_no in range(len(si)):
+        pos_sim.append(sim(si[user_no],sj[user_no]))
+        tmp = []
+        for others_no in range(len(si)):
+            if others_no != user_no:
+                tmp.append(sim(si[user_no],sj[others_no]))
+        neg_sim.append(tmp)
+    pos_sim = torch.exp(pos_sim)
+    neg_sim = torch.exp(neg_sim)
+    neg_sim_sum = neg_sim.sum(1)
+    each_loss = (-1) * torch.log(pos_sim/(pos_sim+neg_sim_sum))
+    return each_loss.sum(0)
+###end###
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--dataset', required=True)
@@ -27,7 +51,10 @@ parser.add_argument('--l2_emb', default=0.0, type=float)
 parser.add_argument('--device', default='cpu', type=str)
 parser.add_argument('--inference_only', default=False, type=str2bool)
 parser.add_argument('--state_dict_path', default=None, type=str)
-
+####my modification start###
+parser.add_argument('--data_arg_proportion', default=0.5, type=float)
+parser.add_argument('--lamda', default=0.5, type=float)
+####end###
 args = parser.parse_args()
 if not os.path.isdir(args.dataset + '_' + args.train_dir):
     os.makedirs(args.dataset + '_' + args.train_dir)
@@ -90,7 +117,11 @@ for epoch in range(epoch_start_idx, args.num_epochs + 1):
     for step in range(num_batch): # tqdm(range(num_batch), total=num_batch, ncols=70, leave=False, unit='b'):
         u, seq, pos, neg = sampler.next_batch() # tuples to ndarray
         u, seq, pos, neg = np.array(u), np.array(seq), np.array(pos), np.array(neg)
-        pos_logits, neg_logits = model(u, seq, pos, neg)
+        ###original code###
+        #pos_logits, neg_logits = model(u, seq, pos, neg)
+        ###my modification start###
+        pos_logits, neg_logits, pairs_1_e, pair_2_e = model(u, seq, pos, neg, args.data_arg_proportion)
+        ###end###
         pos_labels, neg_labels = torch.ones(pos_logits.shape, device=args.device), torch.zeros(neg_logits.shape, device=args.device)
         # print("\neye ball check raw_logits:"); print(pos_logits); print(neg_logits) # check pos_logits > 0, neg_logits < 0
         adam_optimizer.zero_grad()
@@ -98,6 +129,9 @@ for epoch in range(epoch_start_idx, args.num_epochs + 1):
         loss = bce_criterion(pos_logits[indices], pos_labels[indices])
         loss += bce_criterion(neg_logits[indices], neg_labels[indices])
         for param in model.item_emb.parameters(): loss += args.l2_emb * torch.norm(param)
+        ###my modification start###
+        loss += CL_loss(pairs_1_e ,pairs_2_e) * args.lamda
+        ###end###
         loss.backward()
         adam_optimizer.step()
         print("loss in epoch {} iteration {}: {}".format(epoch, step, loss.item())) # expected 0.4~0.6 after init few epochs
