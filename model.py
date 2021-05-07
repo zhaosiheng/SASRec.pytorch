@@ -66,7 +66,7 @@ class SASRec(torch.nn.Module):
         views = []
         for user_seq in seqs:
             number = int(len(user_seq) * hyper_para)
-            seq = user_seq.numpy().tolist()
+            seq = user_seq.tolist()
             if type==0:#item crop
                 start_point = random.randint(0 ,len(seq)-number)
                 views.append(seq[start_point:start_point+number])
@@ -84,7 +84,7 @@ class SASRec(torch.nn.Module):
                 tmp = seq[start_point:start_point+number]
                 random.shuffle(tmp)
                 views.append(seq[:start_point]+tmp+seq[start_point+number:])
-        return torch.tensor(views)
+        return np.array(views)
     ###end###  
     def log2feats(self, log_seqs):
         seqs = self.item_emb(torch.LongTensor(log_seqs).to(self.dev))
