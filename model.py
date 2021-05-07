@@ -61,7 +61,30 @@ class SASRec(torch.nn.Module):
 
             # self.pos_sigmoid = torch.nn.Sigmoid()
             # self.neg_sigmoid = torch.nn.Sigmoid()
-    
+    ###my modification start###
+    def data_argument(seqs ,type ,hyper_para):
+        views = []
+        for user_seq in seqs:
+            number = int(len(user_seq) * hyper_para)
+            if type==0:#item crop
+                start_point = random.randint(o ,len(user_seq)-number)
+                reviews.append(user_seq[start_point:start+number])
+            if type==1:#item mask
+                while number>0:
+                    mask_target = random.randint(0 ,len(user_seq)-1)
+                    if user_seq[mask_target]==0:
+                        contiune
+                    else:
+                        user_seq[mask_target] = 0
+                        number = number - 1
+            if type==2:#item reorder
+                sart_point = random.randint(0 ,len(user_seq)-number)
+                seq = user_seq.numpy().to_list()
+                tmp = seq[start_point:start_point+number]
+                random.shuffle(tmp)
+                views.append(torch.tensor(seq[:start_point]+tmp+seq[start_point+number:]))
+        return views
+    ###end###  
     def log2feats(self, log_seqs):
         seqs = self.item_emb(torch.LongTensor(log_seqs).to(self.dev))
         seqs *= self.item_emb.embedding_dim ** 0.5
@@ -133,28 +156,5 @@ class SASRec(torch.nn.Module):
         # preds = self.pos_sigmoid(logits) # rank same item list for different users
 
         return logits # preds # (U, I)
-    ###my modification start###
-    def data_argument(seqs ,type ,hyper_para):
-        views = []
-        for user_seq in seqs:
-            number = int(len(user_seq) * hyper_para)
-            if type==0:#item crop
-                start_point = random.randint(o ,len(user_seq)-number)
-                reviews.append(user_seq[start_point:start+number])
-            if type==1:#item mask
-                while number>0:
-                    mask_target = random.randint(0 ,len(user_seq)-1)
-                    if user_seq[mask_target]==0:
-                        contiune
-                    else:
-                        user_seq[mask_target] = 0
-                        number = number - 1
-            if type==2:#item reorder
-                sart_point = random.randint(0 ,len(user_seq)-number)
-                seq = user_seq.numpy().to_list()
-                tmp = seq[start_point:start_point+number]
-                random.shuffle(tmp)
-                views.append(torch.tensor(seq[:start_point]+tmp+seq[start_point+number:]))
-        return views
-                             
+        
                       
