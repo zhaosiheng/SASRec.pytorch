@@ -68,7 +68,7 @@ class SASRec(torch.nn.Module):
             number = int(len(user_seq) * hyper_para)
             if type==0:#item crop
                 start_point = random.randint(0 ,len(user_seq)-number)
-                views.append(user_seq[start_point:start+number])
+                views.append(user_seq[start_point:start_point+number])
             if type==1:#item mask
                 while number>0:
                     mask_target = random.randint(0 ,len(user_seq)-1)
