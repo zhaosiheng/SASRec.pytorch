@@ -68,7 +68,7 @@ class SASRec(torch.nn.Module):
             number = int(len(user_seq) * hyper_para)
             if type==0:#item crop
                 start_point = random.randint(0 ,len(user_seq)-number)
-                reviews.append(user_seq[start_point:start+number])
+                views.append(user_seq[start_point:start+number])
             if type==1:#item mask
                 while number>0:
                     mask_target = random.randint(0 ,len(user_seq)-1)
@@ -77,6 +77,7 @@ class SASRec(torch.nn.Module):
                     else:
                         user_seq[mask_target] = 0
                         number = number - 1
+                views.append(user_seq)
             if type==2:#item reorder
                 sart_point = random.randint(0 ,len(user_seq)-number)
                 seq = user_seq.numpy().to_list()
