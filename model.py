@@ -67,7 +67,7 @@ class SASRec(torch.nn.Module):
         for user_seq in seqs:
             number = int(len(user_seq) * hyper_para)
             if type==0:#item crop
-                start_point = random.randint(o ,len(user_seq)-number)
+                start_point = random.randint(0 ,len(user_seq)-number)
                 reviews.append(user_seq[start_point:start+number])
             if type==1:#item mask
                 while number>0:
