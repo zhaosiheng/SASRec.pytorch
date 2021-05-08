@@ -20,8 +20,8 @@ def sim(u ,v):
 ###end###
 ###my modification start###
 def  CL_loss(si , sj):
-    pos_sim = []
-    neg_sim = []
+    pos_sim = [] #user_number
+    neg_sim = [] #user_number * (user_number-1)
     for user_no in range(len(si)):
         pos_sim.append(sim(si[user_no],sj[user_no]).exp())
         others_dot = []
@@ -39,8 +39,8 @@ def  CL_loss(si , sj):
     
     neg_pair = torch.stack(neg_sim)
     print("neg_pair:",neg_pair.shape)
-    neg_sim_sum = neg_sim.sum(1)
-    each_loss = (-1) * torch.log(pos_sim/(pos_sim+neg_sim_sum))
+    neg_pair_sum = neg_pair.sum(1)
+    each_loss = (-1) * torch.log(pos_pair/(pos_pair+neg_pair_sum))
     return each_loss.sum(0)
 ###end###
 
