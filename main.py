@@ -31,17 +31,17 @@ def  CL_loss(si , sj):
         tmp = torch.Tensor(len(others_dot),1)
         tmp = torch.cat(others_dot)
         neg_sim.append(tmp)
-    print("pos_sim:",pos_sim[0].shape)
+    #print("pos_sim:",pos_sim[0].shape)
     
     pos_pair = torch.cat(pos_sim)
-    print("pos_pair:",pos_pair.shape)
-    print("neg_sim:",neg_sim[0][0].shape)
+    #print("pos_pair:",pos_pair.shape)
+    #print("neg_sim:",neg_sim[0][0].shape)
     
     neg_pair = torch.stack(neg_sim)
-    print("neg_pair:",neg_pair.shape)
+    #print("neg_pair:",neg_pair.shape)
     neg_pair_sum = neg_pair.sum(1)
     each_loss = (-1) * torch.log(pos_pair/(pos_pair+neg_pair_sum))
-    return each_loss.sum(0)
+    return each_loss.sum(0) / len(si)
 ###end###
 
 parser = argparse.ArgumentParser()
