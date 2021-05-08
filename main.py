@@ -30,7 +30,7 @@ def  CL_loss(si , sj):
                 tmp.append(sim(si[user_no],sj[others_no]).exp())
         neg_sim.append(tmp)
     
-    print("neg_sim:",neg_sim[0].shape)
+    print("neg_sim:",neg_sim[0][0].shape)
     neg_sim_sum = neg_sim.sum(1)
     each_loss = (-1) * torch.log(pos_sim/(pos_sim+neg_sim_sum))
     return each_loss.sum(0)
