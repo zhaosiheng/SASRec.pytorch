@@ -142,7 +142,8 @@ class SASRec(torch.nn.Module):
         ###original code###
         #return pos_logits, neg_logits # pos_pred, neg_pred
         ###my modification start###
-        return pos_logits, neg_logits, view_1_feats, view_2_feats
+        len = len(view_1_feats[0])
+        return pos_logits, neg_logits, view_1_feats[:,len-1,:].squeeze(1), view_2_feats[:,len-1,:].squeeze(1)
         ###end###
 
     def predict(self, user_ids, log_seqs, item_indices): # for inference
