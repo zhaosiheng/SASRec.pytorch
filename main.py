@@ -37,7 +37,7 @@ def  CL_loss(si , sj):
     print("pos_pair:",pos_pair.shape)
     print("neg_sim:",neg_sim[0][0].shape)
     
-    neg_pair = torch.cat(neg_sim)
+    neg_pair = torch.stack(neg_sim)
     print("neg_pair:",neg_pair.shape)
     neg_sim_sum = neg_sim.sum(1)
     each_loss = (-1) * torch.log(pos_sim/(pos_sim+neg_sim_sum))
