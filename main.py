@@ -15,7 +15,7 @@ def str2bool(s):
 def sim(u ,v):
     u = u.unsqueeze(0)
     v = v.unsqueeze(0)
-    u = u.transpose(0,1)
+    v = v.transpose(0,1)
     return torch.matmul(u ,v)
 ###end###
 ###my modification start###
