@@ -24,10 +24,12 @@ def  CL_loss(si , sj):
     neg_sim = []
     for user_no in range(len(si)):
         pos_sim.append(sim(si[user_no],sj[user_no]).exp())
-        tmp = []
+        others_dot = []
         for others_no in range(len(si)):
             if others_no != user_no:
-                tmp.append(sim(si[user_no],sj[others_no]).exp())
+                others_dot.append(sim(si[user_no],sj[others_no]).exp())
+        tmp = torch.Tensor(len(others_dot),1)
+        tmp = torch.cat(others_dot)
         neg_sim.append(tmp)
     print("pos_sim:",pos_sim[0].shape)
     pos_pair = torch.Tensor(len(si),1)
