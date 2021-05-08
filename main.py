@@ -23,16 +23,14 @@ def  CL_loss(si , sj):
     pos_sim = []
     neg_sim = []
     for user_no in range(len(si)):
-        pos_sim.append(sim(si[user_no],sj[user_no]).exp().numpy().tolist())
+        pos_sim.append(sim(si[user_no],sj[user_no]).exp())
         tmp = []
         for others_no in range(len(si)):
             if others_no != user_no:
-                tmp.append(sim(si[user_no],sj[others_no]).exp().numpy().tolist())
+                tmp.append(sim(si[user_no],sj[others_no]).exp())
         neg_sim.append(tmp)
-    pos_sim = torch.tensor(pos_sim)
-    print("pos_sim:",pos_sim.shape)
-    neg_sim = torch.tensor(neg_sim)
-    print("neg_sim:",neg_sim.shape)
+    
+    print("neg_sim:",neg_sim[0].shape)
     neg_sim_sum = neg_sim.sum(1)
     each_loss = (-1) * torch.log(pos_sim/(pos_sim+neg_sim_sum))
     return each_loss.sum(0)
