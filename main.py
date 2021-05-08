@@ -32,11 +32,11 @@ def  CL_loss(si , sj):
         tmp = torch.cat(others_dot)
         neg_sim.append(tmp)
     print("pos_sim:",pos_sim[0].shape)
-    pos_pair = torch.Tensor(len(si),1)
+    
     pos_pair = torch.cat(pos_sim)
     print("pos_pair:",pos_pair.shape)
     print("neg_sim:",neg_sim[0][0].shape)
-    neg_pair = torch.Tensor(len(si) * (len(si)-1),1)
+    
     neg_pair = torch.cat(neg_sim)
     print("neg_pair:",neg_pair.shape)
     neg_sim_sum = neg_sim.sum(1)
