@@ -80,7 +80,7 @@ class SASRec(torch.nn.Module):
                         number = number - 1
                 views.append(seq)
             if type==2:#item reorder
-                sart_point = random.randint(0 ,len(user_seq)-number)
+                start_point = random.randint(0 ,len(user_seq)-number)
                 tmp = seq[start_point:start_point+number]
                 random.shuffle(tmp)
                 views.append(seq[:start_point]+tmp+seq[start_point+number:])
