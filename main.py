@@ -138,7 +138,9 @@ for epoch in range(epoch_start_idx, args.num_epochs + 1):
         loss += bce_criterion(neg_logits[indices], neg_labels[indices])
         for param in model.item_emb.parameters(): loss += args.l2_emb * torch.norm(param)
         ###my modification start###
-        loss += CL_loss(pairs_1_e ,pairs_2_e) * args.lamda
+        tmp = CL_loss(pairs_1_e ,pairs_2_e) * args.lamda
+        print("CL loss is:",tmp.item())
+        loss += tmp
         ###end###
         loss.backward()
         adam_optimizer.step()
