@@ -16,7 +16,7 @@ def sim(u ,v):
     u = u.unsqueeze(0)
     v = v.unsqueeze(0)
     v = v.transpose(0,1)
-    return torch.matmul(u ,v)
+    return torch.matmul(u ,v).squeeze(0)
 ###end###
 ###my modification start###
 def  CL_loss(si , sj):
@@ -29,8 +29,14 @@ def  CL_loss(si , sj):
             if others_no != user_no:
                 tmp.append(sim(si[user_no],sj[others_no]).exp())
         neg_sim.append(tmp)
-    
+    print("pos_sim:",pos_sim[0].shape)
+    pos_pair = torch.Tensor(len(si),1)
+    pos_pair = torch.cat(pos_sim)
+    print("pos_pair:",pos_pair[0].shape)
     print("neg_sim:",neg_sim[0][0].shape)
+    neg_pair = torch.Tensor(len(si) * (len(si)-1),1)
+    neg_pair = torch.cat(neg_sim)
+    print("neg_pair:",neg_pair[0][0].shape)
     neg_sim_sum = neg_sim.sum(1)
     each_loss = (-1) * torch.log(pos_sim/(pos_sim+neg_sim_sum))
     return each_loss.sum(0)
