@@ -60,8 +60,8 @@ parser.add_argument('--device', default='cpu', type=str)
 parser.add_argument('--inference_only', default=False, type=str2bool)
 parser.add_argument('--state_dict_path', default=None, type=str)
 ####my modification start###
-parser.add_argument('--data_arg_proportion', default=0.5, type=float)
-parser.add_argument('--lamda', default=0.5, type=float)
+parser.add_argument('--data_arg_proportion', default=0.2, type=float)
+parser.add_argument('--lamda', default=0.1, type=float)
 ####end###
 args = parser.parse_args()
 if not os.path.isdir(args.dataset + '_' + args.train_dir):
