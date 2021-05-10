@@ -19,10 +19,10 @@ def sim(u ,v):
     return torch.matmul(u ,v).squeeze(0)
 ###end###
 ###my modification start###
-def  CL_loss(si , sj):
+def  CL_loss(si , sj ,args):
     m1 = torch.matmul(si ,sj.transpose(0,1)).exp()
     pos_sim = torch.diag(m1)
-    my_filter = torch.where( torch.eye(len(si))==0, 1, 0)
+    my_filter = torch.where( torch.eye(len(si))==0, 1, 0).to(args.device)
     m2 = torch.matmul(m1 ,my_filter)
     neg_sim_sum = torch.diag(m2)
     return (-1)*(pos_sim / pos_sim + neg_sim_sum).log().sum(0) / len(si)
@@ -122,7 +122,7 @@ for epoch in range(epoch_start_idx, args.num_epochs + 1):
         loss += bce_criterion(neg_logits[indices], neg_labels[indices])
         for param in model.item_emb.parameters(): loss += args.l2_emb * torch.norm(param)
         ###my modification start###
-        tmp = CL_loss(pairs_1_e ,pairs_2_e) * args.lamda
+        tmp = CL_loss(pairs_1_e ,pairs_2_e ,args) * args.lamda
         print("CL loss is:",tmp.item())
         loss += tmp
         ###end###
