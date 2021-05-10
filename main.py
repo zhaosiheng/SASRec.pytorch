@@ -25,6 +25,8 @@ def  CL_loss(si , sj ,args):
     my_filter = torch.where( torch.eye(len(si))==0, 1, 0).type(torch.FloatTensor).to(args.device)
     m2 = torch.matmul(m1 ,my_filter)
     neg_sim_sum = torch.diag(m2)
+    print("neg_sim_sum:",neg_sim_sum)
+    print("log:",neg_sim_sum.log())
     return (-1)*(pos_sim / pos_sim + neg_sim_sum).log().sum(0) / len(si)
 ###end###
 
