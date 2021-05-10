@@ -27,8 +27,8 @@ def  CL_loss(si , sj ,args):
     neg_sim_sum = torch.diag(m2)
     print("pos_sim:",pos_sim)
     print("neg_sim_sum:",neg_sim_sum)
-    print("log:",(pos_sim / pos_sim + neg_sim_sum).log())
-    return (pos_sim / pos_sim + neg_sim_sum).log().sum(0) / len(si) *(-1)
+    print("log:",(pos_sim / (pos_sim + neg_sim_sum)).log())
+    return (pos_sim / (pos_sim + neg_sim_sum)).log().sum(0) / len(si) *(-1)
 ###end###
 
 parser = argparse.ArgumentParser()
