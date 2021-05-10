@@ -20,28 +20,12 @@ def sim(u ,v):
 ###end###
 ###my modification start###
 def  CL_loss(si , sj):
-    pos_sim = [] #user_number
-    neg_sim = [] #user_number * (user_number-1)
-    for user_no in range(len(si)):
-        pos_sim.append(sim(si[user_no],sj[user_no]).exp())
-        others_dot = []
-        for others_no in range(len(si)):
-            if others_no != user_no:
-                others_dot.append(sim(si[user_no],sj[others_no]).exp())
-        tmp = torch.Tensor(len(others_dot),1)
-        tmp = torch.cat(others_dot)
-        neg_sim.append(tmp)
-    #print("pos_sim:",pos_sim[0].shape)
-    
-    pos_pair = torch.cat(pos_sim)
-    #print("pos_pair:",pos_pair.shape)
-    #print("neg_sim:",neg_sim[0][0].shape)
-    
-    neg_pair = torch.stack(neg_sim)
-    #print("neg_pair:",neg_pair.shape)
-    neg_pair_sum = neg_pair.sum(1)
-    each_loss = (-1) * torch.log(pos_pair/(pos_pair+neg_pair_sum))
-    return each_loss.sum(0) / len(si)
+    m1 = torch.matmul(si ,sj.transpose(0,1)).exp()
+    pos_sim = torch.diag(m1)
+    my_filter = torch.where( torch.eye(len(si))==0, 1, 0)
+    m2 = torch.matmul(m1 ,my_filter1)
+    neg_sim_sum = torch.diag(m2)
+    return (-1)*(pos_sim / pos_sim + neg_sim_sum).log().sum(0) / len(si)
 ###end###
 
 parser = argparse.ArgumentParser()
