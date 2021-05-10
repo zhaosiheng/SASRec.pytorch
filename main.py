@@ -22,8 +22,8 @@ def sim(u ,v):
 def  CL_loss(si , sj ,args):
     m1 = torch.matmul(si ,sj.transpose(0,1)).exp()
     pos_sim = torch.diag(m1)
-    my_filter = torch.where( torch.eye(len(si))==0, 1, 0)
-    m2 = torch.matmul(m1 ,my_filter).to(args.device)
+    my_filter = torch.where( torch.eye(len(si))==0, 1, 0).to(args.device)
+    m2 = torch.matmul(m1 ,my_filter)
     neg_sim_sum = torch.diag(m2)
     return (-1)*(pos_sim / pos_sim + neg_sim_sum).log().sum(0) / len(si)
 ###end###
