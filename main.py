@@ -125,7 +125,8 @@ for epoch in range(epoch_start_idx, args.num_epochs + 1):
         ###my modification start###
         tmp = CL_loss(pairs_1_e ,pairs_2_e ,args) * args.lamda
         print("CL loss is:",tmp.item())
-        loss += tmp
+        if args.lamda!=0:
+            loss += tmp
         ###end###
         loss.backward()
         adam_optimizer.step()
