@@ -20,7 +20,7 @@ def sim(u ,v):
 ###end###
 ###my modification start###
 def  CL_loss(si , sj ,args):
-    m1 = torch.matmul(si ,sj.transpose(0,1)).exp()
+    m1 = (torch.matmul(si ,sj.transpose(0,1)) / args.tau).exp()
     pos_sim = torch.diag(m1)
     my_filter = torch.where( torch.eye(len(si))==0, 1, 0).type(torch.FloatTensor).to(args.device)
     m2 = torch.matmul(m1 ,my_filter)
@@ -47,6 +47,7 @@ parser.add_argument('--state_dict_path', default=None, type=str)
 ####my modification start###
 parser.add_argument('--data_arg_proportion', default=0.2, type=float)
 parser.add_argument('--lamda', default=0.1, type=float)
+parser.add_argument('--tau', default=2, type=float)
 ####end###
 args = parser.parse_args()
 if not os.path.isdir(args.dataset + '_' + args.train_dir):
