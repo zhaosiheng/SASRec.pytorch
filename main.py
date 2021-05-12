@@ -47,7 +47,7 @@ parser.add_argument('--state_dict_path', default=None, type=str)
 ####my modification start###
 parser.add_argument('--data_arg_proportion', default=0.2, type=float)
 parser.add_argument('--lamda', default=0.1, type=float)
-parser.add_argument('--tau', default=2, type=float)
+parser.add_argument('--tau', default=3, type=float)
 ####end###
 args = parser.parse_args()
 if not os.path.isdir(args.dataset + '_' + args.train_dir):
